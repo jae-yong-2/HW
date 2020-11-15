@@ -1,5 +1,3 @@
-import random
-
 x, y, turn = 0, 0, 0
 BLANK = ' '
 board = [[BLANK, BLANK, BLANK],
@@ -7,8 +5,37 @@ board = [[BLANK, BLANK, BLANK],
          [BLANK, BLANK, BLANK], ]
 
 
-def write(player, write):
-    while (True):
+def win(player, O_X):
+    global board
+    check = 0
+    for x in range(3):
+        for y in range(3):
+            if board[x][y] == O_X:
+                check += 1
+                if check == 3:
+                    print(f'player {player} IS Win')
+                    return 0
+        check = 0
+
+    for y in range(3):
+        for x in range(3):
+            if board[x][y] == O_X:
+                check += 1
+                if check == 3:
+                    print(f'player {player} IS Win')
+                    return 0
+        check = 0
+    if ((board[0][0] == 'X' and board[1][1] == 'X' and board[2][2] == 'X') | (
+            board[0][2] == 'X' and board[1][1] == 'X' and board[2][0] == 'X')):
+        print(f"PLAYER {player} IS WIN")
+        return 0
+    return 1
+
+
+def write(player, O_X):
+    global turn, board
+    turn += 1
+    while True:
         print(f"PLAYER {player}'s turn(x y)");
         x, y = input("input x y : ").split()
         x = int(x)
@@ -17,7 +44,7 @@ def write(player, write):
             print("retry");
             continue
         if board[x][y] == BLANK:
-            board[x][y] = write
+            board[x][y] = O_X
             break
         else:
             print("Wrong Position !!\n");
@@ -25,23 +52,26 @@ def write(player, write):
 
 
 def game():
-    print("1.person vs person 2.person vs computer\n select 1 or 2")
-    s = int(input())
-
-    if s == 1:
-        while (True):
-            print("x|y [0]|[1]|[2]")
-            for a in range(3):
-                b = 0
-                print("    ---|---|---")
-                print(f'[{a}] {board[a][b]}  | {board[a][b + 1]} | {board[a][b + 2]} ');
+    while (True):
+        print("x|y [0]|[1]|[2]")
+        for a in range(3):
+            b = 0
             print("    ---|---|---")
+            print(f'[{a}] {board[a][b]}  | {board[a][b + 1]} | {board[a][b + 2]} ');
+        print("    ---|---|---")
 
-            print(f'turn {turn}')
-            if turn % 2 == 1:
-                write(2, 'X')
-            else:
-                write(1, 'O')
+        print(f'turn {turn}')
+        if turn % 2 == 1:
+            write(2, 'X')
+            if win(2, 'X') == 0:
+                return
+        else:
+            write(1, 'O')
+            if win(1, 'O') == 0:
+                return
 
+        if turn ==9:
+            print("Draw")
+            return
 
 game()
